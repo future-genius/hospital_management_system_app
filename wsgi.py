@@ -8,8 +8,9 @@ if __name__ != "__main__":
         # Run initial setup if possible
         try:
             orchestrate_initial_setup()
-        except Exception:
+        except Exception as e:
             # Ignore setup errors in production environments
+            print(f"Setup initialization error: {e}")
             pass
 
 # Expose the Flask app as "application" for WSGI servers

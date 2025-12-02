@@ -1,0 +1,52 @@
+[build]
+# Build directory - static files go here
+publish = "dist"
+# Command to build your project
+command = "pip install -r requirements.txt"
+
+# Python runtime version
+functions = "netlify/functions"
+node_bundler = "none"
+
+[functions]
+# Configure serverless function settings
+included_files = ["app.py", "models.py", "config.py", "templates/**", "static/**", "routes/**", "instance/**", "wsgi.py"]
+node_bundler = "none"
+directory = "netlify/functions"
+python_version = "3.11"
+memory = 1024
+timeout = 30
+
+# Redirect all requests to the serverless function
+[[redirects]]
+from = "/*"
+to = "/.netlify/functions/app"
+status = 200
+
+# Static file caching
+[[headers]]
+for = "/static/*"
+[headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+# Security headers
+[[headers]]
+for = "/*"
+[headers.values]
+  X-Content-Type-Options = "nosniff"
+  X-Frame-Options = "SAMEORIGIN"
+  X-XSS-Protection = "1; mode=block"
+  Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Environment variables for different contexts
+[context.production.environment]
+PYTHON_VERSION = "3.11"
+FLASK_ENV = "production"
+
+[context.preview.environment]
+PYTHON_VERSION = "3.11"
+FLASK_ENV = "staging"
+
+[context.deploy-preview.environment]
+PYTHON_VERSION = "3.11"
+FLASK_ENV = "staging"

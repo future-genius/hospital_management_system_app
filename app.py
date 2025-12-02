@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, redirect, url_for, request
 from flask_login import LoginManager, current_user
 from werkzeug.security import generate_password_hash
@@ -13,8 +14,23 @@ from models import (
 # App Setup
 # --------------------------------------------------------
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dev-secret'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+
+# Configuration for both local and serverless environments
+SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-change-in-production'
+app.config['SECRET_KEY'] = SECRET_KEY
+
+# Database configuration - supports both SQLite and PostgreSQL
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    # Use environment database (PostgreSQL on Netlify)
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+else:
+    # Fallback to SQLite
+    db_dir = os.path.join(os.path.dirname(__file__), 'instance')
+    os.makedirs(db_dir, exist_ok=True)
+    db_path = os.path.join(db_dir, 'app.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -134,6 +150,19 @@ def initial_setup():
         )
         db.session.add(new_admin)
         db.session.commit()
+
+
+# --------------------------------------------------------
+# Orchestration Function for Setup
+# --------------------------------------------------------
+def orchestrate_initial_setup():
+    """Safely run initial setup within app context."""
+    try:
+        with app.app_context():
+            db.create_all()
+            initial_setup()
+    except Exception as e:
+        print(f"Setup error (will continue): {e}")
 
 
 # --------------------------------------------------------

@@ -1,20 +1,8 @@
 [build]
-# Build directory - static files go here
-publish = "dist"
-# Command to build your project
+# Build command to install dependencies
 command = "pip install -r requirements.txt"
-
-# Python runtime version
+# Functions directory
 functions = "netlify/functions"
-node_bundler = "none"
-
-[functions]
-# Configure serverless function settings
-included_files = ["app.py", "models.py", "config.py", "templates/**", "static/**", "routes/**", "instance/**", "wsgi.py"]
-node_bundler = "none"
-directory = "netlify/functions"
-memory = 1024
-timeout = 30
 
 # Redirect all requests to the serverless function
 [[redirects]]

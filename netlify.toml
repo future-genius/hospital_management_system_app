@@ -1,6 +1,12 @@
 [build]
-# Functions directory
+# No build command needed - Netlify auto-installs Python deps
+command = ""
+# Functions directory - where Netlify Functions are located
 functions = "netlify/functions"
+# Use current directory as publish (minimal static files only)
+publish = "."
+# Ignore the default Netlify build if no command is specified
+ignore = "false"
 
 # Redirect all requests to the serverless function
 [[redirects]]

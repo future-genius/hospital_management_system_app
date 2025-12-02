@@ -3,8 +3,9 @@
 command = ""
 # Directory where Netlify Functions are located
 functions = "netlify/functions"
-# Publish the static directory
-publish = "static"
+# Publish directory removed to avoid UI/publish mismatch
+# Netlify will use repository root for publish unless overridden in UI
+# (This helps function detection when UI base dir is set incorrectly)
 
 # Override any UI settings - these redirects catch all traffic to the function
 [[redirects]]

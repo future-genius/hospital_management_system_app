@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Find Providers - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="content-area">
+    <h1>Providers at {{ clinic.clinic_title }}</h1>
+
+    {% if providers %}
+        <div class="provider-list">
+            {% for provider in providers %}
+            <div class="provider-card">
+                <h3>{{ provider.account_link.full_name }}</h3>
+                <p><strong>Specialization:</strong> {{ provider.expertise or 'General Practice' }}</p>
+                <a href="{{ url_for('clientele.view_provider', provider_id=provider.provider_id) }}" class="card-link">Check Availability</a>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-message">No providers are available for this service at the moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+<!-- Navbar -->
+<nav class="app-navbar">
+  <div class="navbar-content">
+    <div class="navbar-brand-section">
+      <a href="#" class="navbar-brand">
+        <i class="fas fa-hospital"></i> HealthSys
+      </a>
+      <button class="sidebar-toggle">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    <div class="navbar-user-section">
+      <span class="user-greeting">Hello, {{ current_user.given_name }}</span>
+      <a href="{{ url_for('identity.signout') }}" class="navbar-link">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="app-container">
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar">
+    <ul class="sidebar-menu">
+
+      {# ========================= ADMIN MENU ========================= #}
+      {% if current_user.is_authenticated and current_user.access_tier.tier_name == 'admin' %}
+        <li class="sidebar-item">
+          <a href="{{ url_for('governance.hub') }}"><i class="fas fa-tachometer-alt"></i><span class="item-text">Admin Dashboard</span></a>
+        </li>
+        <li class="sidebar-item">
+          <a href="{{ url_for('governance.list_providers') }}"><i class="fas fa-user-md"></i><span class="item-text">Manage Providers</span></a>
+        </li>
+        <li class="sidebar-item">
+          <a href="{{ url_for('governance.list_recipients') }}"><i class="fas fa-users"></i><span class="item-text">Manage Patients</span></a>
+        </li>
+        <li class="sidebar-item">
+          <a href="{{ url_for('governance.list_clinics') }}"><i class="fas fa-clinic-medical"></i><span class="item-text">Manage Clinics</span></a>
+        </li>
+
+      {# ========================= PROVIDER MENU ========================= #}
+      {% elif current_user.is_authenticated and current_user.access_tier.tier_name == 'provider' %}
+        <li class="sidebar-item">
+          <a href="{{ url_for('provision.hub') }}"><i class="fas fa-tachometer-alt"></i><span class="item-text">Provider Dashboard</span></a>
+        </li>
+        <li class="sidebar-item">
+          <a href="{{ url_for('provision.view_sessions') }}"><i class="fas fa-calendar-alt"></i><span class="item-text">Appointments</span></a>
+        </li>
+        <li class="sidebar-item">
+          <a href="{{ url_for('provision.manage_availability') }}"><i class="fas fa-clock"></i><span class="item-text">Availability</span></a>
+        </li>
+
+      {# ========================= PATIENT MENU ========================= #}
+      {% elif current_user.is_authenticated and current_user.access_tier.tier_name == 'patient' %}
+        <li class="sidebar-item">
+          <a href="{{ url_for('clientele.hub') }}"><i class="fas fa-tachometer-alt"></i><span class="item-text">My Dashboard</span></a>
+        </li>
+        <li class="sidebar-item">
+          <a href="{{ url_for('clientele.browse_clinics') }}"><i class="fas fa-clinic-medical"></i><span class="item-text">Find Clinics</span></a>
+        </li>
+        <li class="sidebar-item">
+          <a href="{{ url_for('clientele.view_sessions') }}"><i class="fas fa-calendar-alt"></i><span class="item-text">My Appointments</span></a>
+        </li>
+      {% endif %}
+
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="app-main">
+    {% block content %}{% endblock %}
+  </main>
+
+</div>
+ 

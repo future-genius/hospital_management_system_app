@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Register New Patient - Admin{% endblock %}
+
+{% block content %}
+<div class="page-content" style="max-width: 800px; margin: 0 auto;">
+  
+  <!-- Page Header with Gradient -->
+  <div style="background: linear-gradient(135deg, #0A4D68 0%, #088395 50%, #05BFDB 100%); color: white; padding: 3rem 2rem; border-radius: var(--radius-lg); margin-bottom: 2.5rem; box-shadow: var(--shadow-lg); text-align: center;">
+    <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fas fa-user-plus"></i></div>
+    <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">Register New Patient</h1>
+    <p style="font-size: 1.05rem; opacity: 0.95; margin-bottom: 0;">Create a new patient account in the healthcare system</p>
+  </div>
+
+  <!-- Form Sections -->
+  <div class="card" style="box-shadow: var(--shadow-lg); border: none;">
+    
+    <!-- Personal Information Section -->
+    <div style="padding: 2rem; border-bottom: 2px solid var(--gray-100);">
+      <h2 style="color: var(--navy); font-weight: 700; margin-bottom: 1.5rem; font-size: 1.2rem;">
+        <i class="fas fa-user" style="color: var(--primary-main); margin-right: 0.7rem;"></i>Personal Information
+      </h2>
+      
+      <form method="POST" onsubmit="validatePatientForm()" id="patientForm">
+        <!-- Email Address -->
+        <div class="form-group">
+          <label for="email_address" class="form-label" style="font-weight: 600; color: var(--navy);">
+            <i class="fas fa-envelope" style="color: var(--primary-main); margin-right: 0.5rem;"></i>Email Address <span style="color: var(--danger);">*</span>
+          </label>
+          <input type="email" id="email_address" name="email_address" class="form-control" required
+                 placeholder="patient@example.com" value="{{ request.form.get('email_address', '') }}"
+                 style="padding: 0.85rem; border: 2px solid var(--gray-200); border-radius: var(--radius-md); transition: var(--transition);"
+                 onfocus="this.style.borderColor='var(--primary-main)'; this.style.boxShadow='0 0 0 3px rgba(8, 131, 149, 0.1)';"
+                 onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none';">
+          <small style="color: var(--gray-600); display: block; margin-top: 0.4rem;">
+            <i class="fas fa-info-circle"></i> This will be the patient's login email
+          </small>
+        </div>
+
+        <!-- Name Fields -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="given_name" class="form-label" style="font-weight: 600; color: var(--navy);">
+              <i class="fas fa-id-card" style="color: var(--primary-main); margin-right: 0.5rem;"></i>First Name <span style="color: var(--danger);">*</span>
+            </label>
+            <input type="text" id="given_name" name="given_name" class="form-control"
+                   placeholder="John" value="{{ request.form.get('given_name', '') }}" required
+                   style="padding: 0.85rem; border: 2px solid var(--gray-200); border-radius: var(--radius-md); transition: var(--transition);"
+                   onfocus="this.style.borderColor='var(--primary-main)'; this.style.boxShadow='0 0 0 3px rgba(8, 131, 149, 0.1)';"
+                   onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none';">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="surname" class="form-label" style="font-weight: 600; color: var(--navy);">
+              <i class="fas fa-id-card" style="color: var(--primary-main); margin-right: 0.5rem;"></i>Last Name <span style="color: var(--danger);">*</span>
+            </label>
+            <input type="text" id="surname" name="surname" class="form-control"
+                   placeholder="Doe" value="{{ request.form.get('surname', '') }}" required
+                   style="padding: 0.85rem; border: 2px solid var(--gray-200); border-radius: var(--radius-md); transition: var(--transition);"
+                   onfocus="this.style.borderColor='var(--primary-main)'; this.style.boxShadow='0 0 0 3px rgba(8, 131, 149, 0.1)';"
+                   onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none';">
+          </div>
+        </div>
+
+        <!-- Department Selection -->
+        <div class="form-group">
+          <label for="clinic_id" class="form-label" style="font-weight: 600; color: var(--navy);">
+            <i class="fas fa-hospital" style="color: var(--primary-main); margin-right: 0.5rem;"></i>Department/Service <span style="color: var(--danger);">*</span>
+          </label>
+          <select id="clinic_id" name="clinic_id" class="form-control" required
+                  style="padding: 0.85rem; border: 2px solid var(--gray-200); border-radius: var(--radius-md); transition: var(--transition);"
+                  onfocus="this.style.borderColor='var(--primary-main)'; this.style.boxShadow='0 0 0 3px rgba(8, 131, 149, 0.1)';"
+                  onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none';">
+            <option value="">-- Select a department --</option>
+            {% for clinic in clinics %}
+              <option value="{{ clinic.clinic_id }}" 
+                      {% if request.form.get('clinic_id') | string == clinic.clinic_id | string %}selected{% endif %}>
+                {{ clinic.clinic_title }}
+              </option>
+            {% endfor %}
+          </select>
+          <small style="color: var(--gray-600); display: block; margin-top: 0.4rem;">
+            <i class="fas fa-info-circle"></i> Select the primary department this patient will be associated with
+          </small>
+        </div>
+    </div>
+
+    <!-- Security Information Section -->
+    <div style="padding: 2rem;">
+      <h2 style="color: var(--navy); font-weight: 700; margin-bottom: 1.5rem; font-size: 1.2rem;">
+        <i class="fas fa-lock" style="color: var(--danger); margin-right: 0.7rem;"></i>Security Information
+      </h2>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="credential" class="form-label" style="font-weight: 600; color: var(--navy);">
+            <i class="fas fa-key" style="color: var(--primary-main); margin-right: 0.5rem;"></i>Temporary Password <span style="color: var(--danger);">*</span>
+          </label>
+          <div style="position: relative;">
+            <input type="password" id="credential" name="credential" class="form-control" required
+                   placeholder="Create a strong temporary password" style="padding: 0.85rem; border: 2px solid var(--gray-200); border-radius: var(--radius-md); transition: var(--transition); padding-right: 2.8rem;"
+                   onfocus="this.style.borderColor='var(--primary-main)'; this.style.boxShadow='0 0 0 3px rgba(8, 131, 149, 0.1)';"
+                   onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none';">
+            <button type="button" id="togglePassword" 
+                    style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+                           background: none; border: none; cursor: pointer; color: var(--primary-main); font-size: 1.1rem; transition: var(--transition);">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <small style="color: var(--gray-600); display: block; margin-top: 0.4rem;">
+            <i class="fas fa-exclamation-triangle"></i> Patient must change this on first login. Minimum 6 characters.
+          </small>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label for="credential_confirm" class="form-label" style="font-weight: 600; color: var(--navy);">
+            <i class="fas fa-check-circle" style="color: var(--primary-main); margin-right: 0.5rem;"></i>Confirm Password <span style="color: var(--danger);">*</span>
+          </label>
+          <div style="position: relative;">
+            <input type="password" id="credential_confirm" name="credential_confirm" class="form-control" required
+                   placeholder="Confirm the password" style="padding: 0.85rem; border: 2px solid var(--gray-200); border-radius: var(--radius-md); transition: var(--transition); padding-right: 2.8rem;"
+                   onfocus="this.style.borderColor='var(--primary-main)'; this.style.boxShadow='0 0 0 3px rgba(8, 131, 149, 0.1)';"
+                   onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none';">
+            <button type="button" id="togglePasswordConfirm" 
+                    style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+                           background: none; border: none; cursor: pointer; color: var(--primary-main); font-size: 1.1rem; transition: var(--transition);">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 1rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--gray-100);">
+          <button type="submit" class="btn btn-primary" style="flex: 1; padding: 1rem; font-weight: 700; font-size: 1.05rem; border-radius: var(--radius-lg); transition: var(--transition);"
+                  onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-lg)';"
+                  onmouseout="this.style.transform='none'; this.style.boxShadow='var(--shadow-md)';">
+            <i class="fas fa-check"></i> Create Patient Account
+          </button>
+          <a href="{{ url_for('governance.list_recipients') }}" class="btn btn-secondary" style="flex: 1; padding: 1rem; font-weight: 700; font-size: 1.05rem; border-radius: var(--radius-lg); text-align: center; text-decoration: none; transition: var(--transition);"
+             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-lg)';"
+             onmouseout="this.style.transform='none'; this.style.boxShadow='var(--shadow-md)';">
+            <i class="fas fa-times"></i> Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<!-- Password toggle and form validation -->
+<script>
+  function togglePasswordVisibility(toggleBtnId, inputId) {
+    const toggleBtn = document.getElementById(toggleBtnId);
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const pwdInput = document.getElementById(inputId);
+      const icon = toggleBtn.querySelector('i');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+        toggleBtn.title = 'Hide password';
+      } else {
+        pwdInput.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+        toggleBtn.title = 'Show password';
+      }
+    });
+  }
+
+  function validatePatientForm() {
+    const email = document.getElementById('email_address').value.trim();
+    const password = document.getElementById('credential').value;
+    const confirmPwd = document.getElementById('credential_confirm').value;
+    const clinicId = document.getElementById('clinic_id').value;
+    const firstName = document.getElementById('given_name').value.trim();
+    const lastName = document.getElementById('surname').value.trim();
+
+    if (!firstName) {
+      alert('First name is required.');
+      return false;
+    }
+
+    if (!lastName) {
+      alert('Last name is required.');
+      return false;
+    }
+
+    if (!email || !email.includes('@')) {
+      alert('Please enter a valid email address.');
+      return false;
+    }
+
+    if (!clinicId) {
+      alert('Please select a department for this patient.');
+      return false;
+    }
+
+    if (!password || !confirmPwd) {
+      alert('Password fields cannot be empty.');
+      return false;
+    }
+
+    if (password !== confirmPwd) {
+      alert('Passwords do not match. Please check and try again.');
+      return false;
+    }
+
+    if (password.length < 6) {
+      alert('Password must be at least 6 characters long.');
+      return false;
+    }
+
+    return true;
+  }
+
+  // Initialize password toggle on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    togglePasswordVisibility('togglePassword', 'credential');
+    togglePasswordVisibility('togglePasswordConfirm', 'credential_confirm');
+  });
+</script>
+
+{% endblock %}

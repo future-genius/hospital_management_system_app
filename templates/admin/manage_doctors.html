@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Manage Doctors</h2>
+
+<form class="mb-3" method="get">
+  <div class="input-group">
+    <input class="form-control" name="search" placeholder="Search doctors" value="{{ search }}">
+    <button class="btn btn-outline-secondary" type="submit">Search</button>
+  </div>
+</form>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Specialization</th>
+
+      {% if current_user.role != 'doctor' %}
+      <th>Email</th>
+      {% endif %}
+
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for acct in doctors %}
+    <tr>
+      <td>{{ acct.full_name }}</td>
+      <td>{{ acct.doctor_profile.specialization }}</td>
+
+      {% if current_user.role != 'doctor' %}
+      <td>{{ acct.email }}</td>
+      {% endif %}
+
+      <td>
+        <a class="btn btn-sm btn-primary" href="{{ url_for('admin.doctor_detail', doctor_id=acct.id) }}">
+          View
+        </a>
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="4">No doctors found</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

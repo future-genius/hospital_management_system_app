@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Appointment - Admin{% endblock %}
+
+{% block content %}
+<div class="page-content" style="max-width: 900px; margin: 0 auto;">
+  
+  <!-- Page Header with Gradient -->
+  <div style="background: linear-gradient(135deg, #0A4D68 0%, #088395 50%, #05BFDB 100%); color: white; padding: 3rem 2rem; border-radius: var(--radius-lg); margin-bottom: 2.5rem; box-shadow: var(--shadow-lg); text-align: center;">
+    <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fas fa-calendar-plus"></i></div>
+    <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">Register New Appointment</h1>
+    <p style="font-size: 1.05rem; opacity: 0.95; margin-bottom: 0;">Create a healthcare appointment between a provider and patient</p>
+  </div>
+
+  <!-- Form Card -->
+  <div class="card" style="box-shadow: var(--shadow-lg); border: none;">
+    
+    <!-- Appointment Information Section -->
+    <div style="padding: 2rem; border-bottom: 2px solid var(--gray-100);">
+      <h2 style="color: var(--navy); font-weight: 700; margin-bottom: 1.5rem; font-size: 1.2rem;">
+        <i class="fas fa-stethoscope" style="color: var(--primary-main); margin-right: 0.7rem;"></i>Appointment Details
+      </h2>
+      
+      <form method="POST" onsubmit="validateAppointmentForm()" id="appointmentForm">
+        
+        <!-- Provider Selection -->
+        <div class="form-group">
+          <label for="provider_id" class="form-label" style="font-weight: 600; color: var(--navy);">
+            <i class="fas fa-user-md" style="color: var(--primary-main); margin-right: 0.5rem;"></i>Healthcare Provider <span style="color: var(--danger);">*</span>
+          </label>
+          <select id="provider_id" name="provider_id" class="form-control" required
+                  style="padding: 0.85rem; border: 2px solid var(--gray-200); border-radius: var(--radius-md); transition: var(--transition);"
+                  onfocus="this.style.borderColor='var(--primary-main)'; this.style.boxShadow='0 0 0 3px rgba(8, 131, 149, 0.1)';"
+                  onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none';">
+            <option value="">-- Select a healthcare provider --</option>
+            {% for provider in providers %}
+              <option value="{{ provider.provider_id }}">
+                Dr. #{{ provider.provider_id }} ({{ provider.clinic.clinic_title if provider.clinic else 'No Department' }})
+              </option>
+            {% endfor %}
+          </select>
+          <small style="color: var(--gray-600); display: block; margin-top: 0.4rem;">
+            <i class="fas fa-info-circle"></i> Select the healthcare provider for this appointment
+          </small>
+        </div>
+
+        <!-- Patient Selection -->
+        <div class="form-group">
+          <label for="recipient_id" class="form-label" style="font-weight: 600; color: var(--navy);">
+            <i class="fas fa-user" style="color: var(--primary-main); margin-right: 0.5rem;"></i>Patient <span style="color: var(--danger);">*</span>
+          </label>
+          <select id="recipient_id" name="recipient_id" class="form-control" required
+                  style="padding: 0.85rem; border: 2px solid var(--gray-200); border-radius: var(--radius-md); transition: var(--transition);"
+                  onfocus="this.style.borderColor='var(--primary-main)'; this.style.boxShadow='0 0 0 3px rgba(8, 131, 149, 0.1)';"
+                  onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none';">
+            <option value="">-- Select a patient --</option>
+            {% for recipient in recipients %}
+              <option value="{{ recipient.recipient_id }}">
+                {{ recipient.account_link.given_name }} {{ recipient.account_link.surname }} (ID: #{{ recipient.recipient_id }})
+              </option>
+            {% endfor %}
+          </select>
+          <small style="color: var(--gray-600); display: block; margin-top: 0.4rem;">
+            <i class="fas fa-info-circle"></i> Select the patient for this appointment
+          </small>
+        </div>
+
+        <!-- Date and Time Selection -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="appointment_date" class="form-label" style="font-weight: 600; color: var(--navy);">
+              <i class="fas fa-calendar" style="color: var(--primary-main); margin-right: 0.5rem;"></i>Appointment Date <span style="color: var(--danger);">*</span>
+            </label>
+            <input type="date" id="appointment_date" class="form-control" required
+                   style="padding: 0.85rem; border: 2px solid var(--gray-200); border-radius: var(--radius-md); transition: var(--transition);"
+                   onfocus="this.style.borderColor='var(--primary-main)'; this.style.boxShadow='0 0 0 3px rgba(8, 131, 149, 0.1)';"
+                   onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none';">
+            <small style="color: var(--gray-600); display: block; margin-top: 0.4rem;">
+              <i class="fas fa-info-circle"></i> Select the date for the appointment
+            </small>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="appointment_time" class="form-label" style="font-weight: 600; color: var(--navy);">
+              <i class="fas fa-clock" style="color: var(--primary-main); margin-right: 0.5rem;"></i>Appointment Time <span style="color: var(--danger);">*</span>
+            </label>
+            <input type="time" id="appointment_time" class="form-control" required
+                   style="padding: 0.85rem; border: 2px solid var(--gray-200); border-radius: var(--radius-md); transition: var(--transition);"
+                   onfocus="this.style.borderColor='var(--primary-main)'; this.style.boxShadow='0 0 0 3px rgba(8, 131, 149, 0.1)';"
+                   onblur="this.style.borderColor='var(--gray-200)'; this.style.boxShadow='none';">
+            <small style="color: var(--gray-600); display: block; margin-top: 0.4rem;">
+              <i class="fas fa-info-circle"></i> Select the time for the appointment
+            </small>
+          </div>
+        </div>
+
+        <!-- Hidden Combined DateTime Field -->
+        <input type="hidden" id="appointment_time_full" name="appointment_time" value="">
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 1rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--gray-100);">
+          <button type="submit" class="btn btn-primary" style="flex: 1; padding: 1rem; font-weight: 700; font-size: 1.05rem; border-radius: var(--radius-lg); transition: var(--transition);"
+                  onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-lg)';"
+                  onmouseout="this.style.transform='none'; this.style.boxShadow='var(--shadow-md)';">
+            <i class="fas fa-check"></i> Create Appointment
+          </button>
+          <a href="{{ url_for('governance.list_sessions') }}" class="btn btn-secondary" style="flex: 1; padding: 1rem; font-weight: 700; font-size: 1.05rem; border-radius: var(--radius-lg); text-align: center; text-decoration: none; transition: var(--transition);"
+             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-lg)';"
+             onmouseout="this.style.transform='none'; this.style.boxShadow='var(--shadow-md)';">
+            <i class="fas fa-times"></i> Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<!-- Form validation script -->
+<script>
+  function validateAppointmentForm() {
+    const providerId = document.getElementById('provider_id').value.trim();
+    const recipientId = document.getElementById('recipient_id').value.trim();
+    const appointmentDate = document.getElementById('appointment_date').value;
+    const appointmentTime = document.getElementById('appointment_time').value;
+
+    if (!providerId) {
+      alert('Please select a healthcare provider.');
+      return false;
+    }
+
+    if (!recipientId) {
+      alert('Please select a patient.');
+      return false;
+    }
+
+    if (!appointmentDate) {
+      alert('Please select an appointment date.');
+      return false;
+    }
+
+    if (!appointmentTime) {
+      alert('Please select an appointment time.');
+      return false;
+    }
+
+    // Combine date and time into ISO format datetime
+    const dateTime = appointmentDate + 'T' + appointmentTime;
+    document.getElementById('appointment_time_full').value = dateTime;
+
+    // Validate that the appointment is in the future
+    const selectedDateTime = new Date(dateTime);
+    const now = new Date();
+    
+    if (selectedDateTime <= now) {
+      alert('Appointment date and time must be in the future.');
+      return false;
+    }
+
+    return true;
+  }
+</script>
+
+{% endblock %}

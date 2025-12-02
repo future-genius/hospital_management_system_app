@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Dashboard - Hospital Management System{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-item"><a href="{{ url_for('patient.dashboard') }}" class="sidebar-menu-link active">📊 Overview</a></li>
+            <li class="sidebar-menu-item"><a href="#search" class="sidebar-menu-link">🔍 Find Doctors</a></li>
+            <li class="sidebar-menu-item"><a href="#appointments" class="sidebar-menu-link">📅 My Appointments</a></li>
+            <li class="sidebar-menu-item"><a href="#history" class="sidebar-menu-link">📋 Medical Records</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Welcome to Your Dashboard</h1>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-3 mb-4">
+            <div class="stat-card">
+                <div class="stat-value">{{ total_appointments }}</div>
+                <div class="stat-label">Total Appointments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ completed_appointments }}</div>
+                <div class="stat-label">Completed Visits</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ upcoming_appointments }}</div>
+                <div class="stat-label">Upcoming</div>
+            </div>
+        </div>
+
+        <!-- Doctor Search -->
+        <div class="card mb-4" id="search">
+            <div class="card-header">
+                <h3>🔍 Search & Book Doctors</h3>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('patient.dashboard') }}" class="grid grid-cols-3 gap-3">
+                    <div class="form-group mb-0">
+                        <label for="specialty">Specialty</label>
+                        <select name="specialty" class="form-control">
+                            <option value="">All Specialties</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="General Medicine">General Medicine</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="Surgery">Surgery</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label for="name">Doctor Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="Enter doctor name">
+                    </div>
+                    <div class="form-group mb-0 d-flex flex-column justify-content-end">
+                        <button type="submit" class="btn btn-primary btn-block">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Available Doctors -->
+        {% if doctors %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Available Doctors</h3>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-cols-2 gap-3">
+                    {% for doctor in doctors %}
+                    <div class="card p-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <div>
+                                <h4 class="mb-1">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h4>
+                                <p class="text-primary fw-medium mb-0">{{ doctor.specialization or 'Specialist' }}</p>
+                            </div>
+                            <span class="badge badge-primary">{{ doctor.department.name }}</span>
+                        </div>
+                        <p class="text-muted small mb-2">⏰ {{ doctor.availabilities.filter_by(is_active=True).count() }} available slots</p>
+                        <button class="btn btn-primary btn-block">Book Appointment</button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            No doctors match your search criteria at the moment. Try adjusting your filters.
+        </div>
+        {% endif %}
+
+        <!-- My Appointments -->
+        <div class="card mb-4" id="appointments">
+            <div class="card-header">
+                <h3>My Appointments</h3>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Doctor</th>
+                            <th>Date & Time</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for apt in appointments %}
+                        <tr>
+                            <td>Dr. {{ apt.doctor.user.first_name }} {{ apt.doctor.user.last_name }}</td>
+                            <td>{{ apt.scheduled_at.strftime('%Y-%m-%d %H:%M') if apt.scheduled_at else 'N/A' }}</td>
+                            <td>{{ apt.doctor.department.name }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if apt.status == 'completed' %}badge-success
+                                    {% elif apt.status == 'booked' %}badge-warning
+                                    {% else %}badge-danger
+                                    {% endif %}">
+                                    {{ apt.status | capitalize }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-info">View</a>
+                                {% if apt.status == 'booked' %}
+                                <a href="#" class="btn btn-sm btn-danger">Cancel</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                You have no appointments yet. <a href="#search" class="text-primary fw-medium">Find a doctor</a> to book your first visit.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

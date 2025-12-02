@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Patient History - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="content-area">
+
+    <!-- Header -->
+    <h1>Patient History: {{ recipient.account_link.full_name }}</h1>
+
+    <!-- Clinical Records -->
+    {% if records %}
+        <div class="history-list">
+            {% for record in records %}
+            <div class="history-item">
+
+                <div class="history-date">
+                    <strong>Date Recorded:</strong>
+                    {{ record.noted_on.strftime('%Y-%m-%d %H:%M') }}
+                </div>
+
+                <div class="history-findings">
+                    <strong>Clinical Findings</strong>
+                    <p>{{ record.findings }}</p>
+                </div>
+
+                <div class="history-plan">
+                    <strong>Treatment Plan</strong>
+                    <p>{{ record.treatment_plan }}</p>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <p class="empty-message">There are no clinical records for this patient yet.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

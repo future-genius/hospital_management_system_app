@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<div class="row">
+  <div class="col-md-3">
+    <div class="card p-3">
+      <h5>Doctors</h5>
+      <div class="display-6">{{ total_doctors }}</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card p-3">
+      <h5>Patients</h5>
+      <div class="display-6">{{ total_patients }}</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card p-3">
+      <h5>Appointments</h5>
+      <div class="display-6">{{ total_appointments }}</div>
+    </div>
+  </div>
+</div>
+
+<h4 class="mt-4">Recent Appointments</h4>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Doctor</th>
+      <th>Patient</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for a in recent_appointments %}
+    <tr>
+      <td>{{ a.appointment_date }} {{ a.appointment_time }}</td>
+      <td>{{ a.doctor.account.full_name }}</td>
+      <td>{{ a.patient.account.full_name }}</td>
+      <td>{{ a.status }}</td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="4">No recent appointments</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

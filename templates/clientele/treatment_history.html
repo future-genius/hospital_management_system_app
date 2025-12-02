@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Treatment History - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="content-area">
+    <h1>My Treatment History</h1>
+
+    {% if records %}
+        <div class="history-list">
+            {% for record in records %}
+            <div class="history-item">
+                <div class="history-date">{{ record.noted_on.strftime('%Y-%m-%d') }}</div>
+                <div class="history-content">
+                    <div class="history-section">
+                        <strong>Medical Findings:</strong>
+                        <p>{{ record.findings }}</p>
+                    </div>
+                    <div class="history-section">
+                        <strong>Treatment Plan:</strong>
+                        <p>{{ record.treatment_plan }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-message">You have no treatment records yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

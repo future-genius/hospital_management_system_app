@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Add Service Department - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 900px;">
+  <!-- Header -->
+  <div class="mb-4 d-flex align-items-center gap-3">
+    <div class="icon-circle bg-gradient-success d-flex align-items-center justify-content-center text-white" style="width:50px; height:50px; border-radius:12px; font-size:1.5rem;">
+      <i class="fas fa-clinic-medical"></i>
+    </div>
+    <div>
+      <h1 class="h3 mb-1">Create Service Department</h1>
+      <p class="text-muted mb-0">Add a new healthcare service or clinical department</p>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form method="POST" class="card shadow-sm">
+    <div class="card-body">
+      <div class="mb-3">
+        <label for="clinic_title" class="form-label">
+          <i class="fas fa-hospital"></i> Department Name
+        </label>
+        <input type="text" id="clinic_title" name="clinic_title" class="form-control" required placeholder="e.g., Cardiology, Pediatrics">
+      </div>
+
+      <div class="mb-3">
+        <label for="clinic_notes" class="form-label">
+          <i class="fas fa-align-left"></i> Description
+        </label>
+        <textarea id="clinic_notes" name="clinic_notes" class="form-control" style="min-height:120px;" placeholder="Describe the department, services, and specializations..."></textarea>
+      </div>
+
+      <div class="alert alert-primary d-flex align-items-start gap-2">
+        <i class="fas fa-info-circle mt-1"></i>
+        <div>
+          <strong>Note:</strong> After creation, you can assign doctors and manage schedules for this department.
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-success w-100">
+        <i class="fas fa-plus-circle"></i> Create Department
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

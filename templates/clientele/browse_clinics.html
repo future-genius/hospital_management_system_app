@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Service Directory - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <!-- Page Header -->
+    <div class="portal-header">
+        <h1><i class="fas fa-search"></i> Find Healthcare Services</h1>
+        <p>Browse and discover professional healthcare providers in our network</p>
+    </div>
+
+    {% if clinics %}
+        <div class="service-grid">
+            {% for clinic in clinics %}
+            <div class="service-card">
+                <div class="service-card-header">
+                    <i class="fas fa-hospital"></i>
+                    <h3 class="service-card-title">{{ clinic.clinic_title }}</h3>
+                </div>
+                <div class="service-card-body">
+                    <p class="service-card-desc">
+                        {{ clinic.clinic_notes or 'Providing professional healthcare services for your well-being and recovery.' }}
+                    </p>
+                    <a href="{{ url_for('clientele.search_providers', clinic_id=clinic.clinic_id) }}" class="service-card-btn">
+                        <i class="fas fa-arrow-right"></i> View Providers
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3 class="empty-state-title">No Services Available</h3>
+            <p class="empty-state-desc">Currently, there are no healthcare services available. Please check back later.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

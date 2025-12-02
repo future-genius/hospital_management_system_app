@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Hospital Management System{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-item">
+                <a href="{{ url_for('admin.dashboard') }}" class="sidebar-menu-link active">📊 Overview</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="#doctors" class="sidebar-menu-link">👨‍⚕️ Manage Doctors</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="#patients" class="sidebar-menu-link">👥 Manage Patients</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="#departments" class="sidebar-menu-link">🏥 Departments</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="#appointments" class="sidebar-menu-link">📅 Appointments</a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1>Admin Dashboard</h1>
+
+        <!-- Statistics Summary -->
+        <section class="grid grid-cols-4 mb-8">
+            <div class="stat-card">
+                <div class="stat-value">{{ total_doctors }}</div>
+                <div class="stat-label">Doctors</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ total_patients }}</div>
+                <div class="stat-label">Patients</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ total_appointments }}</div>
+                <div class="stat-label">Appointments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ total_departments }}</div>
+                <div class="stat-label">Departments</div>
+            </div>
+        </section>
+
+        <!-- Recent Appointments -->
+        <section class="card">
+            <div class="card-header d-flex justify-between">
+                <h3>Recent Appointments</h3>
+                <a href="#" class="btn btn-sm btn-primary">View All</a>
+            </div>
+
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for apt in recent_appointments %}
+                        <tr>
+                            <td>{{ apt.patient.user.first_name }} {{ apt.patient.user.last_name }}</td>
+                            <td>Dr. {{ apt.doctor.user.first_name }} {{ apt.doctor.user.last_name }}</td>
+                            <td>
+                                {{ apt.scheduled_at.strftime('%Y-%m-%d %H:%M') if apt.scheduled_at else 'N/A' }}
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ 'success' if apt.status == 'booked' else 'info' }}">
+                                    {{ apt.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-info">View</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                No appointments yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Add Doctor Form -->
+        <section class="card mt-8" id="doctors">
+            <div class="card-header">
+                <h3>Add New Doctor</h3>
+            </div>
+
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.manage_doctors') }}" class="grid grid-cols-2 gap-4">
+
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" name="first_name" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" name="last_name" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department_id">Department</label>
+                        <select name="department_id" class="form-control" required>
+                            <option value="">Select Department</option>
+                            {% for dept in departments %}
+                            <option value="{{ dept.id }}">{{ dept.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="specialization">Specialization</label>
+                        <input type="text" name="specialization" class="form-control" placeholder="e.g., Cardiology">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block col-span-2">
+                        Add Doctor
+                    </button>
+
+                </form>
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock %}

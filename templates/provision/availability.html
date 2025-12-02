@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Availability - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 900px;">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold text-navy mb-0">Your Availability Slots</h1>
+    <a href="{{ url_for('provision.add_availability') }}" class="btn btn-success">
+      <i class="fas fa-plus-circle me-1"></i> Add Time Slot
+    </a>
+  </div>
+
+  {% if time_slots %}
+    <div class="card shadow-sm">
+      <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Date / Time</th>
+              <th>Duration (mins)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for slot in time_slots %}
+            <tr>
+              <td>{{ slot.starts_at.strftime('%Y-%m-%d %H:%M') }}</td>
+              <td>{{ slot.duration_mins }}</td>
+              <td>
+                <span class="badge bg-{{ 'success' if slot.slot_available else 'secondary' }}">
+                  {{ 'Available' if slot.slot_available else 'Booked' }}
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% else %}
+    <div class="text-center py-5" style="border: 2px dashed rgba(0,0,0,0.1); border-radius: 0.5rem;">
+      <div class="mb-3" style="font-size: 3rem; color: var(--primary-main);">
+        <i class="fas fa-clock"></i>
+      </div>
+      <p class="h6 fw-semibold mb-1">No availability slots configured</p>
+      <p class="text-muted mb-3">Create your first slot to allow patients to book appointments.</p>
+      <a href="{{ url_for('provision.add_availability') }}" class="btn btn-success">
+        <i class="fas fa-plus-circle me-1"></i> Add Slot
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

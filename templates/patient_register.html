@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+
+    <h3 class="mb-4">Register as a Patient</h3>
+
+    <form method="post" novalidate>
+
+      <!-- Full Name -->
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input name="full_name" class="form-control" placeholder="Enter your full name" value="{{ form.full_name.data or '' }}">
+        {% if form.full_name.errors %}
+          <div class="text-danger small">{{ form.full_name.errors[0] }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label class="form-label">Email Address</label>
+        <input name="email" type="email" class="form-control" placeholder="Enter your email" value="{{ form.email.data or '' }}">
+        {% if form.email.errors %}
+          <div class="text-danger small">{{ form.email.errors[0] }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Password & Confirm Password -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="Create a password">
+          {% if form.password.errors %}
+            <div class="text-danger small">{{ form.password.errors[0] }}</div>
+          {% endif %}
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" name="confirm_password" class="form-control" placeholder="Re-enter password">
+          {% if form.confirm_password.errors %}
+            <div class="text-danger small">{{ form.confirm_password.errors[0] }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Phone Number -->
+      <div class="mb-3">
+        <label class="form-label">Phone Number</label>
+        <input name="phone" type="tel" class="form-control" placeholder="e.g., +1234567890" value="{{ form.phone.data or '' }}">
+        {% if form.phone.errors %}
+          <div class="text-danger small">{{ form.phone.errors[0] }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Date of Birth -->
+      <div class="mb-3">
+        <label class="form-label">Date of Birth</label>
+        <input name="dob" type="date" class="form-control" value="{{ form.dob.data or '' }}">
+        {% if form.dob.errors %}
+          <div class="text-danger small">{{ form.dob.errors[0] }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Gender -->
+      <div class="mb-3">
+        <label class="form-label">Gender</label>
+        <select name="gender" class="form-select">
+          <option value="">Select your gender</option>
+          <option value="Male" {% if form.gender.data=='Male' %}selected{% endif %}>Male</option>
+          <option value="Female" {% if form.gender.data=='Female' %}selected{% endif %}>Female</option>
+          <option value="Other" {% if form.gender.data=='Other' %}selected{% endif %}>Other</option>
+        </select>
+      </div>
+
+      <!-- Blood Group -->
+      <div class="mb-3">
+        <label class="form-label">Blood Group</label>
+        <input name="blood_group" class="form-control" placeholder="e.g., A+, O-" value="{{ form.blood_group.data or '' }}">
+      </div>
+
+      <!-- Address -->
+      <div class="mb-3">
+        <label class="form-label">Residential Address</label>
+        <textarea name="address" class="form-control" placeholder="Enter your full address">{{ form.address.data or '' }}</textarea>
+      </div>
+
+      <!-- General Errors -->
+      {% if form.errors %}
+        <div class="alert alert-danger">
+          Some fields need your attention. Please review and try again.
+        </div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

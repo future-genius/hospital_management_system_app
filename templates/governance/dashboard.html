@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - MedCare{% endblock %}
+
+{% block content %}
+<div class="page-content">
+  <!-- Header -->
+  <div class="portal-header" style="margin-bottom: 2.5rem;">
+    <h1><i class="fas fa-cog"></i> Admin Control Panel</h1>
+    <p>System overview and comprehensive management tools</p>
+  </div>
+
+  <!-- Quick Action Buttons -->
+  <div class="dashboard-section">
+    <h2 class="section-title"><i class="fas fa-tools"></i> Quick Actions</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+      <a href="{{ url_for('governance.create_provider') }}" class="btn btn-primary" style="padding: 1rem; text-align: center; text-decoration: none; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: var(--transition);" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='none';">
+        <i class="fas fa-user-md"></i> Add Doctor
+      </a>
+      <a href="{{ url_for('governance.create_patient') }}" class="btn btn-success" style="padding: 1rem; text-align: center; text-decoration: none; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: var(--transition);" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='none';">
+        <i class="fas fa-user-plus"></i> Register Patient
+      </a>
+      <a href="{{ url_for('governance.create_clinic') }}" class="btn btn-info" style="padding: 1rem; text-align: center; text-decoration: none; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; gap: 0.5rem; color: white; transition: var(--transition);" onmouseover="this.style.transform='translateY(-3px)';" onmouseout="this.style.transform='none';">
+        <i class="fas fa-hospital"></i> Add Service
+      </a>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="dashboard-section">
+    <h2 class="section-title"><i class="fas fa-chart-bar"></i> System Statistics</h2>
+    <div class="stat-row">
+      <div class="stat-mini" style="background: linear-gradient(135deg, #088395, #05BFDB);">
+        <i class="fas fa-user-md" style="font-size: 1.8rem; margin-bottom: 0.5rem; display: block; opacity: 0.9;"></i>
+        <div class="stat-mini-value">{{ provider_count }}</div>
+        <div class="stat-mini-label">Active Doctors</div>
+      </div>
+      <div class="stat-mini" style="background: linear-gradient(135deg, #10B981, #34d399);">
+        <i class="fas fa-users" style="font-size: 1.8rem; margin-bottom: 0.5rem; display: block; opacity: 0.9;"></i>
+        <div class="stat-mini-value">{{ recipient_count }}</div>
+        <div class="stat-mini-label">Registered Patients</div>
+      </div>
+      <div class="stat-mini" style="background: linear-gradient(135deg, #3B82F6, #60a5fa);">
+        <i class="fas fa-calendar-check" style="font-size: 1.8rem; margin-bottom: 0.5rem; display: block; opacity: 0.9;"></i>
+        <div class="stat-mini-value">{{ session_count }}</div>
+        <div class="stat-mini-label">Total Sessions</div>
+      </div>
+      <div class="stat-mini" style="background: linear-gradient(135deg, #F59E0B, #fbbf24);">
+        <i class="fas fa-clinic-medical" style="font-size: 1.8rem; margin-bottom: 0.5rem; display: block; opacity: 0.9;"></i>
+        <div class="stat-mini-value">{{ clinic_count }}</div>
+        <div class="stat-mini-label">Services/Departments</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Management Links -->
+  <div class="dashboard-section">
+    <h2 class="section-title"><i class="fas fa-list"></i> Management</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem;">
+      <a href="{{ url_for('governance.list_providers') }}" class="card" style="text-decoration: none; border-left: 4px solid #088395; transition: var(--transition);" onmouseover="this.style.boxShadow='var(--shadow-lg)';this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='var(--shadow-sm)';this.style.transform='none';">
+        <div class="card-body">
+          <h5 style="color: #0A4D68; margin-bottom: 0.5rem;"><i class="fas fa-user-md"></i> Manage Doctors</h5>
+          <p style="color: var(--gray-600); font-size: 0.9rem; margin-bottom: 0;">View and manage healthcare providers</p>
+        </div>
+      </a>
+      <a href="{{ url_for('governance.list_recipients') }}" class="card" style="text-decoration: none; border-left: 4px solid #10B981; transition: var(--transition);" onmouseover="this.style.boxShadow='var(--shadow-lg)';this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='var(--shadow-sm)';this.style.transform='none';">
+        <div class="card-body">
+          <h5 style="color: #065F46; margin-bottom: 0.5rem;"><i class="fas fa-users"></i> Manage Patients</h5>
+          <p style="color: var(--gray-600); font-size: 0.9rem; margin-bottom: 0;">View and manage patient accounts</p>
+        </div>
+      </a>
+      <a href="{{ url_for('governance.list_clinics') }}" class="card" style="text-decoration: none; border-left: 4px solid #F59E0B; transition: var(--transition);" onmouseover="this.style.boxShadow='var(--shadow-lg)';this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='var(--shadow-sm)';this.style.transform='none';">
+        <div class="card-body">
+          <h5 style="color: #78350F; margin-bottom: 0.5rem;"><i class="fas fa-hospital"></i> Manage Services</h5>
+          <p style="color: var(--gray-600); font-size: 0.9rem; margin-bottom: 0;">View and manage clinics/departments</p>
+        </div>
+      </a>
+      <a href="{{ url_for('governance.list_sessions') }}" class="card" style="text-decoration: none; border-left: 4px solid #3B82F6; transition: var(--transition);" onmouseover="this.style.boxShadow='var(--shadow-lg)';this.style.transform='translateY(-4px)';" onmouseout="this.style.boxShadow='var(--shadow-sm)';this.style.transform='none';">
+        <div class="card-body">
+          <h5 style="color: #1E40AF; margin-bottom: 0.5rem;"><i class="fas fa-calendar-alt"></i> View Sessions</h5>
+          <p style="color: var(--gray-600); font-size: 0.9rem; margin-bottom: 0;">View all scheduled appointments</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Recent Sessions Table -->
+  <div class="dashboard-section">
+    <h2 class="section-title"><i class="fas fa-clock"></i> Recent Sessions</h2>
+    <div class="card">
+      <div class="card-body p-0">
+        {% if recent_sessions %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead style="background: var(--gray-50);">
+                <tr>
+                  <th style="padding: 1rem; font-weight: 700; color: var(--navy);">Date & Time</th>
+                  <th style="padding: 1rem; font-weight: 700; color: var(--navy);">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for session in recent_sessions %}
+                <tr style="border-bottom: 1px solid var(--gray-200);">
+                  <td style="padding: 1rem; color: var(--gray-800);">
+                    <i class="fas fa-calendar"></i> {{ session.booked_timestamp.strftime('%b %d, %Y at %H:%M') }}
+                  </td>
+                  <td style="padding: 1rem;">
+                    <span class="appointment-badge badge-{{ session.session_state.lower() }}" style="display: inline-block;">
+                      {{ session.session_state|capitalize }}
+                    </span>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="empty-state" style="padding: 2rem;">
+            <i class="fas fa-inbox"></i>
+            <h3 class="empty-state-title">No Recent Sessions</h3>
+            <p class="empty-state-desc">There are no recent sessions to display</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

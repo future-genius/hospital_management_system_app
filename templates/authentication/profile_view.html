@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="profile-wrapper">
+    <div class="profile-panel">
+        <h1>Account Information</h1>
+
+        <!-- Personal Details Section -->
+        <div class="profile-section">
+            <h3>Personal Details</h3>
+            <p><strong>Email:</strong> {{ account.email_address }}</p>
+            <p><strong>Name:</strong> {{ account.full_name or 'Not specified' }}</p>
+
+            <form method="POST" action="{{ url_for('identity.update_profile') }}" class="profile-form">
+                <div class="form-field">
+                    <label for="given_name" class="form-label">First Name</label>
+                    <input type="text" id="given_name" name="given_name" class="form-input"
+                           value="{{ account.given_name or '' }}">
+                </div>
+
+                <div class="form-field">
+                    <label for="surname" class="form-label">Last Name</label>
+                    <input type="text" id="surname" name="surname" class="form-input"
+                           value="{{ account.surname or '' }}">
+                </div>
+
+                <button type="submit" class="form-submit">Save Changes</button>
+            </form>
+        </div>
+
+        <!-- Security Section -->
+        <div class="profile-section">
+            <h3>Security</h3>
+            <form method="POST" action="{{ url_for('identity.change_password') }}" class="profile-form">
+                <div class="form-field">
+                    <label for="old_credential" class="form-label">Current Password</label>
+                    <input type="password" id="old_credential" name="old_credential" class="form-input" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="new_credential" class="form-label">New Password</label>
+                    <input type="password" id="new_credential" name="new_credential" class="form-input" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="confirm_credential" class="form-label">Confirm Password</label>
+                    <input type="password" id="confirm_credential" name="confirm_credential" class="form-input" required>
+                </div>
+
+                <button type="submit" class="form-submit">Update Password</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

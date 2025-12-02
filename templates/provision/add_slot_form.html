@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Add Availability Slot - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 600px;">
+
+  <div class="mb-4">
+    <h1 class="h3 fw-bold text-navy">Create Availability Slot</h1>
+    <p class="text-muted mb-0">Set a new time slot for patients to book appointments</p>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form method="POST">
+        <div class="mb-3">
+          <label for="starts_at" class="form-label">Date and Time</label>
+          <input type="datetime-local" id="starts_at" name="starts_at" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="duration_mins" class="form-label">Duration (minutes)</label>
+          <input type="number" id="duration_mins" name="duration_mins" class="form-control" value="60" min="15" step="15" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">
+          <i class="fas fa-plus-circle me-1"></i> Add Slot
+        </button>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

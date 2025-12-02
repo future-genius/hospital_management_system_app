@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Provider Availability (Next 7 Days)</h2>
+
+<form method="post" action="{{ url_for('admin.set_availability') }}">
+  <div class="row">
+    {% for d in next_7_days %}
+    <div class="col-md-4 mb-3">
+      <div class="card p-3">
+        <h6>{{ d.strftime('%A, %b %d') }}</h6>
+        
+        {% set a = availability[d] %}
+        
+        <div class="mb-2">
+          <label for="start_{{ loop.index }}">Start Time</label>
+          <input class="form-control" id="start_{{ loop.index }}" name="start_time" value="{{ a.start_time if a else '09:00' }}">
+        </div>
+        
+        <div class="mb-2">
+          <label for="end_{{ loop.index }}">End Time</label>
+          <input class="form-control" id="end_{{ loop.index }}" name="end_time" value="{{ a.end_time if a else '17:00' }}">
+        </div>
+        
+        <input type="hidden" name="date" value="{{ d.strftime('%Y-%m-%d') }}">
+        
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="is_available" id="available_{{ loop.index }}" {% if a and a.is_available %}checked{% endif %}>
+          <label class="form-check-label" for="available_{{ loop.index }}">Mark as Available</label>
+        </div>
+        
+        <div class="mt-2">
+          <button class="btn btn-sm btn-primary" type="submit">Save Availability</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</form>
+{% endblock %}

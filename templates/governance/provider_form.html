@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Register Doctor - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 900px;">
+  <!-- Header -->
+  <div class="mb-4 d-flex align-items-center gap-3">
+    <div class="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle" style="width: 50px; height: 50px; font-size: 1.5rem;">
+      <i class="fas fa-user-md"></i>
+    </div>
+    <div>
+      <h1 class="h3 fw-bold mb-1 text-navy">Register New Doctor</h1>
+      <p class="text-muted mb-0">Add a qualified physician to your healthcare facility</p>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <form method="POST" class="card shadow-sm">
+    <div class="card-body">
+      <!-- Name Fields -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="given_name" class="form-label"><i class="fas fa-user me-1"></i> First Name</label>
+          <input type="text" id="given_name" name="given_name" class="form-control" required placeholder="John">
+        </div>
+        <div class="col-md-6">
+          <label for="surname" class="form-label"><i class="fas fa-user me-1"></i> Last Name</label>
+          <input type="text" id="surname" name="surname" class="form-control" required placeholder="Doe">
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label for="email_address" class="form-label"><i class="fas fa-envelope me-1"></i> Email Address</label>
+        <input type="email" id="email_address" name="email_address" class="form-control" required placeholder="doctor@hospital.com">
+      </div>
+
+      <!-- Password -->
+      <div class="mb-3">
+        <label for="credential" class="form-label"><i class="fas fa-lock me-1"></i> Password</label>
+        <input type="password" id="credential" name="credential" class="form-control" required placeholder="Enter a secure password">
+      </div>
+
+      <!-- Department & Specialization -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label for="clinic_id" class="form-label"><i class="fas fa-hospital me-1"></i> Department</label>
+          <select name="clinic_id" id="clinic_id" class="form-select" required>
+            <option value="">Select a department</option>
+            {% for clinic in clinics %}
+            <option value="{{ clinic.clinic_id }}">{{ clinic.clinic_title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="expertise" class="form-label"><i class="fas fa-stethoscope me-1"></i> Specialization</label>
+          <input type="text" id="expertise" name="expertise" class="form-control" placeholder="e.g., Cardiology, Surgery">
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary w-100 py-2">
+        <i class="fas fa-check me-1"></i> Register Doctor
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

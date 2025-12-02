@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>My Patients</h2>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Patient Name</th>
+      <th>Last Visit</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for patient in doctor.patients if doctor.patients is defined else [] %}
+    <tr>
+      <td>{{ patient.account.full_name }}</td>
+      {% set last_visit = patient.appointments 
+          | selectattr('status', 'equalto', 'completed') 
+          | list 
+          | first %}
+      <td>{{ last_visit.appointment_date if last_visit else 'No visits yet' }}</td>
+      <td>
+        <a class="btn btn-sm btn-primary" href="#">View Details</a>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="3" class="text-center">No patients assigned yet.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

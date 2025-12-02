@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Provider Details - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="content-area">
+    <div class="provider-info">
+        <h1>{{ provider.account_link.full_name }}</h1>
+        <p><strong>Specialization:</strong> {{ provider.expertise or 'General Practice' }}</p>
+        {% if provider.biography %}
+            <p><strong>About the Provider:</strong> {{ provider.biography }}</p>
+        {% endif %}
+    </div>
+
+    <h3>Available Appointment Slots</h3>
+
+    {% if slots %}
+        <div class="slots-grid">
+            {% for slot in slots %}
+            <div class="slot-card">
+                <div class="slot-date">{{ slot.starts_at.strftime('%Y-%m-%d') }}</div>
+                <div class="slot-time">{{ slot.starts_at.strftime('%H:%M') }}</div>
+                <div class="slot-duration">{{ slot.duration_mins }} minutes</div>
+                <form method="POST" action="{{ url_for('clientele.book_session') }}" style="display: inline;">
+                    <input type="hidden" name="slot_id" value="{{ slot.slot_id }}">
+                    <input type="hidden" name="provider_id" value="{{ provider.provider_id }}">
+                    <button type="submit" class="slot-button">Book Appointment</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-message">No appointment slots are currently available. Please check back later.</p>
+    {% endif %}
+</div>
+{% endblock %}

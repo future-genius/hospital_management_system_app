@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Hospital Management System{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="text-center py-5 bg-light rounded mb-5 shadow-sm">
+    <h1 class="display-5 mb-3">⚕️ Welcome to Hospital Management System</h1>
+    <p class="lead text-secondary mb-4">
+        Professional healthcare management made simple
+    </p>
+
+    {% if not current_user.is_authenticated %}
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('identity.signin') }}" class="btn btn-primary btn-lg px-4">Sign In</a>
+            <a href="{{ url_for('identity.signup') }}" class="btn btn-outline-primary btn-lg px-4">Create Account</a>
+        </div>
+    {% else %}
+        <div class="d-flex justify-content-center">
+            {% if current_user.access_tier.tier_name == 'admin' %}
+                <a href="{{ url_for('governance.hub') }}" class="btn btn-primary btn-lg">Go to Dashboard</a>
+            {% elif current_user.access_tier.tier_name == 'provider' %}
+                <a href="{{ url_for('provision.hub') }}" class="btn btn-primary btn-lg">View Appointments</a>
+            {% elif current_user.access_tier.tier_name == 'patient' %}
+                <a href="{{ url_for('clientele.hub') }}" class="btn btn-primary btn-lg">Book Appointment</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+
+<!-- Features Section -->
+<div class="row text-center mb-5">
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm p-4">
+            <div class="display-4 mb-3">👨‍⚕️</div>
+            <h4>For Doctors</h4>
+            <p class="text-secondary">
+                Manage your availability, view patient appointments, and maintain comprehensive medical records.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm p-4">
+            <div class="display-4 mb-3">👥</div>
+            <h4>For Patients</h4>
+            <p class="text-secondary">
+                Search doctors, book appointments easily, and access your complete medical history online.
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm p-4">
+            <div class="display-4 mb-3">🏥</div>
+            <h4>For Administrators</h4>
+            <p class="text-secondary">
+                Manage the entire hospital system, staff, departments, and appointments efficiently.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<!-- Demo Credentials -->
+{% if not current_user.is_authenticated %}
+<div class="alert alert-info shadow-sm">
+    <strong>Demo Credentials</strong><br>
+    Email: <code>admin@test.local</code>  
+    Password: <code>Admin123</code>  
+    <small class="text-muted">(Admin User)</small>
+</div>
+{% endif %}
+
+{% endblock %}

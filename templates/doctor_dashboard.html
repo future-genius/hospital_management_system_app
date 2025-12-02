@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Dashboard | HMS{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+
+    <!-- Left Navigation Panel -->
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-item">
+                <a href="{{ url_for('doctor.dashboard') }}" class="sidebar-menu-link active">📊 Dashboard Home</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="#appointments" class="sidebar-menu-link">📅 Appointment List</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="#availability" class="sidebar-menu-link">⏰ Set Availability</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="#patients" class="sidebar-menu-link">👥 Patient Records</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Dashboard Area -->
+    <div class="main-content">
+        <h1>Welcome, Doctor</h1>
+
+        <!-- Quick Stats Section -->
+        <div class="grid grid-cols-3" style="margin-bottom: 2rem;">
+            <div class="stat-card">
+                <div class="stat-value">{{ total_appointments }}</div>
+                <div class="stat-label">Overall Appointments</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ completed_appointments }}</div>
+                <div class="stat-label">Completed Sessions</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-value">{{ available_slots }}</div>
+                <div class="stat-label">Open Time Slots</div>
+            </div>
+        </div>
+
+        <!-- Upcoming Appointment Table -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Upcoming Consultations</h3>
+            </div>
+
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Scheduled Time</th>
+                            <th>Current Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for apt in appointments %}
+                        <tr>
+                            <td>{{ apt.patient.user.first_name }} {{ apt.patient.user.last_name }}</td>
+                            <td>
+                                {{ apt.scheduled_at.strftime('%Y-%m-%d %H:%M') if apt.scheduled_at else 'N/A' }}
+                            </td>
+                            <td>
+                                <span class="badge badge-{{ 'success' if apt.status == 'completed' else 'info' }}">
+                                    {{ apt.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-primary">View</a>
+                                {% if apt.status == 'booked' %}
+                                <a href="#" class="btn btn-sm btn-success">Mark Complete</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align:center; padding:2rem; color:var(--slate-500);">
+                                You currently have no scheduled appointments.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Add Availability Section -->
+        <div class="card mt-8">
+            <div class="card-header">
+                <h3>Add a New Availability Slot</h3>
+            </div>
+
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('doctor.add_availability') }}" class="grid grid-cols-3">
+
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" name="start_date" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Time</label>
+                        <input type="time" name="start_time" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Duration (minutes)</label>
+                        <input type="number" name="duration" class="form-control"
+                               value="30" min="15" step="15" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" style="grid-column: 1 / -1;">
+                        Add Availability
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

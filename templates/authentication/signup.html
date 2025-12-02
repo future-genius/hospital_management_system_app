@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account - Healthcare System{% endblock %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 80px); 
+            background: linear-gradient(135deg, var(--bg-lighter) 0%, var(--bg-light) 100%); padding: 2rem;">
+  
+  <div class="form-container">
+    <div class="form-card">
+
+      <!-- Form Header -->
+      <div class="form-header">
+        <i class="fas fa-user-plus"></i>
+        <h2>Create Account</h2>
+        <p>Join and manage your healthcare</p>
+      </div>
+
+      <!-- Sign-up Form -->
+      <form method="POST" class="auth-form" onsubmit="validateClinicSelection()">
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email_address" class="form-label">Email Address</label>
+          <input type="email" id="email_address" name="email_address" class="form-control" required
+                 placeholder="your.email@example.com" value="{{ request.form.get('email_address', '') }}">
+        </div>
+
+        <!-- Name Fields -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div class="form-group">
+            <label for="given_name" class="form-label">First Name</label>
+            <input type="text" id="given_name" name="given_name" class="form-control"
+                   placeholder="First name" value="{{ request.form.get('given_name', '') }}">
+          </div>
+          <div class="form-group">
+            <label for="surname" class="form-label">Last Name</label>
+            <input type="text" id="surname" name="surname" class="form-control"
+                   placeholder="Last name" value="{{ request.form.get('surname', '') }}">
+          </div>
+        </div>
+
+        <!-- Department/Clinic Selection -->
+        <div class="form-group">
+          <label for="clinic_id" class="form-label">Preferred Department</label>
+          <select id="clinic_id" name="clinic_id" class="form-control" required>
+            <option value="">-- Select a department --</option>
+            {% for clinic in clinics %}
+              <option value="{{ clinic.clinic_id }}" 
+                      {% if request.form.get('clinic_id') | string == clinic.clinic_id | string %}selected{% endif %}>
+                {{ clinic.clinic_title }}
+              </option>
+            {% endfor %}
+          </select>
+          <small style="color: var(--gray-600);">This helps us match you with the right doctors and services.</small>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="credential" class="form-label">Password</label>
+          <div style="position: relative;">
+            <input type="password" id="credential" name="credential" class="form-control" required
+                   placeholder="Create a strong password" style="padding-right: 2.5rem;">
+            <button type="button" id="togglePassword" 
+                    style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+                           background: none; border: none; cursor: pointer; color: var(--gray-600); font-size: 1.1rem;">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label for="credential_confirm" class="form-label">Confirm Password</label>
+          <div style="position: relative;">
+            <input type="password" id="credential_confirm" name="credential_confirm" class="form-control" required
+                   placeholder="Re-enter your password" style="padding-right: 2.5rem;">
+            <button type="button" id="togglePasswordConfirm" 
+                    style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+                           background: none; border: none; cursor: pointer; color: var(--gray-600); font-size: 1.1rem;">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary w-100" style="margin-top: 1.5rem;">
+          <i class="fas fa-check"></i> Create Account
+        </button>
+
+      </form>
+
+      <!-- Footer -->
+      <div class="auth-footer" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-200); text-align: center;">
+        <p style="color: var(--gray-600); margin: 0;">
+          Already have an account? 
+          <a href="{{ url_for('identity.signin') }}" style="color: var(--primary-main); font-weight: 600; text-decoration: none;">
+            Sign in here
+          </a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Password visibility toggle and clinic validation -->
+<script>
+  function togglePasswordVisibility(toggleBtnId, inputId) {
+    const toggleBtn = document.getElementById(toggleBtnId);
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const pwdInput = document.getElementById(inputId);
+      const icon = toggleBtn.querySelector('i');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        pwdInput.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    });
+  }
+
+  function validateClinicSelection() {
+    const clinicSelect = document.getElementById('clinic_id');
+    if (!clinicSelect.value) {
+      alert('Please select a department before submitting.');
+      clinicSelect.focus();
+      return false;
+    }
+    return true;
+  }
+
+  togglePasswordVisibility('togglePassword', 'credential');
+  togglePasswordVisibility('togglePasswordConfirm', 'credential_confirm');
+</script>
+{% endblock %}

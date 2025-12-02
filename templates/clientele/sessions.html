@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Your Appointments - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="page-content">
+    <!-- Page Header -->
+    <div class="portal-header">
+        <h1><i class="fas fa-calendar-alt"></i> My Appointments</h1>
+        <p>View and manage your scheduled healthcare sessions</p>
+    </div>
+
+    {% if sessions %}
+        <div class="dashboard-section">
+            <h2 class="section-title"><i class="fas fa-list-check"></i> Scheduled Sessions</h2>
+            <div class="appointment-grid">
+                {% for session in sessions %}
+                <div class="appointment-card">
+                    <div class="appointment-header">
+                        <div>
+                            <div style="font-weight: 700; color: var(--navy); font-family: monospace; margin-bottom: 0.5rem;">
+                                <i class="fas fa-ticket-alt"></i> {{ session.unique_appointment_code or 'APT-' + session.session_id|string }}
+                            </div>
+                            <div class="appointment-time">
+                                <i class="fas fa-calendar"></i> {{ session.booked_timestamp.strftime('%b %d, %Y') }}
+                            </div>
+                            <div style="color: var(--gray-600); font-size: 0.95rem; margin-top: 0.3rem;">
+                                <i class="fas fa-clock"></i> {{ session.booked_timestamp.strftime('%H:%M %p') }}
+                            </div>
+                        </div>
+                        <span class="appointment-badge badge-{{ session.session_state.lower() }}">{{ session.session_state|capitalize }}</span>
+                    </div>
+                    <div class="appointment-details">
+                        <div class="appointment-detail-item">
+                            <i class="fas fa-user-md"></i>
+                            <span><strong>Provider ID:</strong> #{{ session.provider_id }}</span>
+                        </div>
+                        <div class="appointment-detail-item">
+                            <i class="fas fa-heartbeat"></i>
+                            <span><strong>Status:</strong> {{ session.session_state|capitalize }}</span>
+                        </div>
+                    </div>
+                    {% if session.session_state == 'scheduled' %}
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200);">
+                        <form method="POST" action="{{ url_for('clientele.cancel_session', session_id=session.session_id) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                                <i class="fas fa-times"></i> Cancel Appointment
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3 class="empty-state-title">No Appointments Yet</h3>
+            <p class="empty-state-desc">You currently have no scheduled appointments.</p>
+            <a href="{{ url_for('clientele.browse_clinics') }}" class="btn btn-primary">Schedule Your First Appointment</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

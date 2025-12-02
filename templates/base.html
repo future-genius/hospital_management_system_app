@@ -1,0 +1,211 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Healthcare Portal{% endblock %}</title>
+    
+    <!-- Bootstrap & Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% block extra_css %}{% endblock %}
+  </head>
+  
+  <body class="app-body">
+    <div class="app-layout">
+
+      <!-- Navbar -->
+      <nav class="app-navbar">
+        <div class="navbar-content d-flex justify-content-between align-items-center px-3">
+          <div class="navbar-brand-section d-flex align-items-center">
+            <button class="sidebar-toggle btn btn-link p-0 me-2" id="sidebarToggle" aria-label="Toggle sidebar">
+              <i class="fas fa-bars"></i>
+            </button>
+            <a href="{{ url_for('home') }}" class="navbar-brand">
+              <i class="fas fa-hospital"></i> MEDCARE
+            </a>
+          </div>
+          
+          <div class="navbar-user-section">
+            {% if current_user.is_authenticated %}
+              <div class="user-info d-flex align-items-center gap-2">
+                <span class="user-greeting">Welcome, {{ current_user.given_name or 'User' }}</span>
+                <a href="{{ url_for('identity.signout') }}" class="navbar-link">
+                  <i class="fas fa-sign-out-alt"></i> Sign Out
+                </a>
+              </div>
+            {% else %}
+              <a href="{{ url_for('identity.signin') }}" class="navbar-link">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </nav>
+
+      <div class="app-container d-flex">
+
+        <!-- Sidebar -->
+        {% if current_user.is_authenticated %}
+        <aside class="app-sidebar" id="appSidebar">
+          <nav class="sidebar-menu d-flex flex-column">
+            
+            {% if current_user.access_tier.tier_name == 'admin' %}
+              <a href="{{ url_for('governance.hub') }}" class="sidebar-item {% if request.endpoint == 'governance.hub' %}active{% endif %}">
+                <i class="fas fa-chart-line"></i><span class="item-text">Dashboard</span>
+              </a>
+              <a href="{{ url_for('governance.list_providers') }}" class="sidebar-item {% if request.endpoint == 'governance.list_providers' %}active{% endif %}">
+                <i class="fas fa-user-md"></i><span class="item-text">Doctors</span>
+              </a>
+              <a href="{{ url_for('governance.list_recipients') }}" class="sidebar-item {% if request.endpoint == 'governance.list_recipients' %}active{% endif %}">
+                <i class="fas fa-users"></i><span class="item-text">Patients</span>
+              </a>
+              <a href="{{ url_for('governance.list_clinics') }}" class="sidebar-item {% if request.endpoint == 'governance.list_clinics' %}active{% endif %}">
+                <i class="fas fa-clinic-medical"></i><span class="item-text">Services</span>
+              </a>
+              <a href="{{ url_for('governance.list_sessions') }}" class="sidebar-item {% if request.endpoint == 'governance.list_sessions' %}active{% endif %}">
+                <i class="fas fa-calendar-check"></i><span class="item-text">Sessions</span>
+              </a>
+
+            {% elif current_user.access_tier.tier_name == 'provider' %}
+              <a href="{{ url_for('provision.hub') }}" class="sidebar-item {% if request.endpoint == 'provision.hub' %}active{% endif %}">
+                <i class="fas fa-home"></i><span class="item-text">Dashboard</span>
+              </a>
+              <a href="{{ url_for('provision.view_sessions') }}" class="sidebar-item {% if request.endpoint == 'provision.view_sessions' %}active{% endif %}">
+                <i class="fas fa-calendar-alt"></i><span class="item-text">My Sessions</span>
+              </a>
+              <a href="{{ url_for('provision.manage_availability') }}" class="sidebar-item {% if request.endpoint == 'provision.manage_availability' %}active{% endif %}">
+                <i class="fas fa-clock"></i><span class="item-text">Availability</span>
+              </a>
+
+            {% elif current_user.access_tier.tier_name == 'patient' %}
+              <a href="{{ url_for('clientele.hub') }}" class="sidebar-item {% if request.endpoint == 'clientele.hub' %}active{% endif %}">
+                <i class="fas fa-home"></i><span class="item-text">Dashboard</span>
+              </a>
+              <a href="{{ url_for('clientele.browse_clinics') }}" class="sidebar-item {% if request.endpoint == 'clientele.browse_clinics' %}active{% endif %}">
+                <i class="fas fa-search"></i><span class="item-text">Find Services</span>
+              </a>
+              <a href="{{ url_for('clientele.view_sessions') }}" class="sidebar-item {% if request.endpoint == 'clientele.view_sessions' %}active{% endif %}">
+                <i class="fas fa-list-check"></i><span class="item-text">My Sessions</span>
+              </a>
+              <a href="{{ url_for('clientele.treatment_history') }}" class="sidebar-item {% if request.endpoint == 'clientele.treatment_history' %}active{% endif %}">
+                <i class="fas fa-history"></i><span class="item-text">Records</span>
+              </a>
+            {% endif %}
+
+          </nav>
+        </aside>
+        {% endif %}
+
+        <!-- Main Content -->
+        <main class="app-main flex-grow-1">
+          <div class="page-header">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, msg in messages %}
+                  <div class="alert alert-{{ 'danger' if category=='error' else category }} alert-dismissible fade show" role="alert">
+                    {% if category == 'error' %}
+                      <i class="fas fa-exclamation-circle"></i>
+                    {% elif category == 'success' %}
+                      <i class="fas fa-check-circle"></i>
+                    {% else %}
+                      <i class="fas fa-info-circle"></i>
+                    {% endif %}
+                    {{ msg }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+          </div>
+
+          <div class="page-content">
+            {% block content %}{% endblock %}
+          </div>
+        </main>
+
+      </div>
+    </div>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Enhanced Sidebar Toggle with Desktop and Mobile Support
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const appSidebar = document.getElementById('appSidebar');
+      const sidebarStateKey = 'sidebarState';
+      
+      // Check if we're on mobile or desktop
+      function isMobileView() {
+        return window.innerWidth <= 768;
+      }
+      
+      // Load saved sidebar state
+      function initializeSidebarState() {
+        if (!appSidebar) return;
+        
+        const savedState = localStorage.getItem(sidebarStateKey);
+        
+        if (isMobileView()) {
+          // On mobile: handle show/hide state
+          if (savedState === 'hidden') {
+            appSidebar.classList.remove('show');
+          } else {
+            appSidebar.classList.add('show');
+          }
+          appSidebar.classList.remove('collapsed');
+        } else {
+          // On desktop: handle collapsed/expanded state
+          if (savedState === 'collapsed') {
+            appSidebar.classList.add('collapsed');
+          } else {
+            appSidebar.classList.remove('collapsed');
+          }
+          appSidebar.classList.add('show');
+        }
+      }
+      
+      // Handle sidebar toggle
+      if (sidebarToggle && appSidebar) {
+        sidebarToggle.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          if (isMobileView()) {
+            // Mobile: toggle show/hide with elements vanishing
+            appSidebar.classList.toggle('show');
+            localStorage.setItem(sidebarStateKey, appSidebar.classList.contains('show') ? 'visible' : 'hidden');
+          } else {
+            // Desktop: toggle collapsed state with text vanishing
+            appSidebar.classList.toggle('collapsed');
+            localStorage.setItem(sidebarStateKey, appSidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded');
+          }
+        });
+      }
+      
+      // Handle window resize to adapt between mobile and desktop
+      window.addEventListener('resize', function() {
+        const wasCollapsed = appSidebar?.classList.contains('collapsed');
+        
+        if (isMobileView()) {
+          // Switching to mobile
+          appSidebar?.classList.remove('collapsed');
+          appSidebar?.classList.add('show');
+        } else {
+          // Switching to desktop
+          appSidebar?.classList.remove('show');
+          if (wasCollapsed) {
+            appSidebar?.classList.add('collapsed');
+          }
+        }
+      });
+      
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', initializeSidebarState);
+      initializeSidebarState();
+    </script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

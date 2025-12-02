@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+
+    <h3 class="mb-4">Register as a Doctor</h3>
+
+    <form method="post" novalidate>
+
+      <!-- Full Name -->
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input class="form-control" name="full_name" value="{{ form.full_name.data or '' }}">
+        {% if form.full_name.errors %}
+          <div class="text-danger small">{{ form.full_name.errors[0] }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label class="form-label">Email Address</label>
+        <input class="form-control" name="email" value="{{ form.email.data or '' }}">
+        {% if form.email.errors %}
+          <div class="text-danger small">{{ form.email.errors[0] }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Passwords -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-control">
+          {% if form.password.errors %}
+            <div class="text-danger small">{{ form.password.errors[0] }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" name="confirm_password" class="form-control">
+          {% if form.confirm_password.errors %}
+            <div class="text-danger small">{{ form.confirm_password.errors[0] }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Phone -->
+      <div class="mb-3">
+        <label class="form-label">Phone Number</label>
+        <input class="form-control" name="phone" value="{{ form.phone.data or '' }}">
+        {% if form.phone.errors %}
+          <div class="text-danger small">{{ form.phone.errors[0] }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Specialization -->
+      <div class="mb-3">
+        <label class="form-label">Area of Specialization</label>
+        <input class="form-control" name="specialization" value="{{ form.specialization.data or '' }}">
+        {% if form.specialization.errors %}
+          <div class="text-danger small">{{ form.specialization.errors[0] }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Qualification -->
+      <div class="mb-3">
+        <label class="form-label">Professional Qualification</label>
+        <input class="form-control" name="qualification" value="{{ form.qualification.data or '' }}">
+      </div>
+
+      <!-- Experience -->
+      <div class="mb-3">
+        <label class="form-label">Years of Experience</label>
+        <input type="number" class="form-control" name="experience_years"
+               value="{{ form.experience_years.data or 0 }}">
+      </div>
+
+      <!-- General error message -->
+      {% if form.errors %}
+        <div class="alert alert-danger">
+          Some fields need your attention. Please review the form and try again.
+        </div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary">Create Account</button>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

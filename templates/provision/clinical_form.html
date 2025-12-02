@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Add Clinical Note - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 900px;">
+
+  <!-- Header -->
+  <div class="mb-4">
+    <h1 class="h3 fw-bold text-navy">Record Clinical Findings</h1>
+    <p class="text-muted">
+      Session #{{ session.session_id }} —
+      {{ session.booked_timestamp.strftime('%Y-%m-%d %H:%M') }}
+    </p>
+  </div>
+
+  <!-- Form -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form method="POST">
+
+        <!-- Clinical Findings -->
+        <div class="mb-4">
+          <label for="findings" class="form-label fw-semibold">Clinical Findings</label>
+          <textarea id="findings" name="findings" class="form-control" rows="6"
+            placeholder="Document examination results, observations, and diagnosis..."></textarea>
+        </div>
+
+        <!-- Treatment Plan -->
+        <div class="mb-4">
+          <label for="treatment_plan" class="form-label fw-semibold">Treatment Plan</label>
+          <textarea id="treatment_plan" name="treatment_plan" class="form-control" rows="6"
+            placeholder="Outline recommended treatments, prescriptions, and follow-up steps..."></textarea>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-primary px-4">
+          <i class="fas fa-save me-1"></i> Save Record
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

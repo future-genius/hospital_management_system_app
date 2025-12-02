@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Directory - Clinical Facility Network{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold text-navy mb-0">Patient Directory</h1>
+
+    <!-- Link only if endpoint exists -->
+    <!-- Replace 'governance.list_recipients' if you don't have a register_patient route -->
+    <a href="{{ url_for('governance.list_recipients') }}" class="btn btn-primary">
+      <i class="fas fa-user-plus me-1"></i> Register Patient
+    </a>
+  </div>
+
+  <!-- Patients Table -->
+  {% if recipients %}
+  <div class="card shadow-sm">
+    <div class="card-header bg-light">
+      <h5 class="mb-0"><i class="fas fa-users me-2"></i> Registered Patients</h5>
+    </div>
+    <div class="card-body p-0 table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Joined</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for recipient in recipients %}
+          <tr>
+            <td>{{ recipient.account_link.full_name }}</td>
+            <td><small class="text-muted">{{ recipient.account_link.email_address }}</small></td>
+            <td><small class="text-muted">{{ recipient.account_link.created_on.strftime('%Y-%m-%d') }}</small></td>
+            <td class="text-center">
+              <a href="#" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-eye me-1"></i> View
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="text-center py-5" style="border: 2px dashed rgba(0,0,0,0.1); border-radius: 0.5rem;">
+    <div class="mb-3" style="font-size: 3rem; color: var(--primary-main);">
+      <i class="fas fa-users"></i>
+    </div>
+    <p class="h6 fw-semibold mb-1">No patients registered</p>
+    <p class="text-muted mb-3">Patients will appear here once registered in the system.</p>
+    <a href="{{ url_for('governance.list_recipients') }}" class="btn btn-primary">
+      <i class="fas fa-user-plus me-1"></i> Register First Patient
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

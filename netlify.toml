@@ -1,6 +1,4 @@
 [build]
-# Build command to install dependencies
-command = "pip install -r requirements.txt"
 # Functions directory
 functions = "netlify/functions"
 
